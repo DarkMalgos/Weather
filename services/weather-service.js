@@ -7,6 +7,10 @@ class WeatherService {
     getWeatherHome(city) {
         return axios.get(`${url}&q=${city},fr`)
     }
+    getWeatherCoord(lat, lon) {
+      console.log(lat)
+      return axios.get(`${url}&lat=${lat}&lon=${lon}`)
+    }
 }
 
 export default WeatherService
