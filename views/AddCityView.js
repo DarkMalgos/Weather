@@ -1,8 +1,8 @@
-import React from 'react';
-import {Button, StyleSheet, TextInput, View, AsyncStorage, RefreshControl} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
-import WeatherService from "../services/weather-service";
-import {NavigationEvents} from "react-navigation";
+import React from 'react'
+import {Button, TextInput, View, AsyncStorage} from "react-native"
+import {LinearGradient} from "expo-linear-gradient"
+import WeatherService from "../services/weather-service"
+import { connect } from 'react-redux'
 
 class AddCityView extends React.Component{
     static navigationOptions = ({ navigation }) => {
@@ -18,18 +18,6 @@ class AddCityView extends React.Component{
 
     componentDidMount(): void {
         this.canAdd()
-    }
-
-    canAdd() {
-        AsyncStorage.getItem('cities').then(data => {
-            if (data) {
-                let jsonData = JSON.parse(data);
-                if (jsonData.length >= 15) {
-                    alert('vous avez atteind le maximum de favoris supprimez en pour en ajouter de nouveau');
-                    this.props.navigation.goBack()
-                }
-            }
-        });
     }
 
     onChangeText(text) {
@@ -68,7 +56,6 @@ class AddCityView extends React.Component{
                 colors={['#000', '#3A4149']}
                 style={{ flex: 1, alignItems: 'stretch' }}
             >
-                <NavigationEvents onDidFocus={() => this.canAdd()}/>
                 <View
                     style={{flex: 1, flexDirection: 'row', alignItems: 'flex-start'}}
                 >
@@ -84,10 +71,4 @@ class AddCityView extends React.Component{
     }
 }
 
-const styles = StyleSheet.create({
-    title: {
-        color: '#fff',
-    }
-});
-
-export default AddCityView;
+export default connect()(AddCityView)

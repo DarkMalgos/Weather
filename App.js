@@ -1,10 +1,14 @@
-import React from 'react';
+import React from 'react'
 import AppNavigator from './navigation/AppNavigator'
+import { Provider } from "react-redux"
+import Store from './store/configureStore'
 
 class App extends React.Component {
   render () {
     return (
-      <AppNavigator />
+      <Provider store={Store}>
+        <AppNavigator />
+      </Provider>
     )
   }
 }

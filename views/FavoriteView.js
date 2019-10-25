@@ -1,9 +1,9 @@
-import React from 'react';
-import {View, AsyncStorage, FlatList, RefreshControl, Text, Button, StyleSheet} from "react-native";
-import Icon from 'react-native-vector-icons/Ionicons';
+import React from 'react'
+import {View, AsyncStorage, FlatList, RefreshControl, Button, StyleSheet} from "react-native"
+import Icon from 'react-native-vector-icons/Ionicons'
 import WeatherService from '../services/weather-service'
-import FavoriteItem from "../components/FavoriteItem";
-import {SwipeRow} from "react-native-swipe-list-view";
+import FavoriteItem from "../components/FavoriteItem"
+import {SwipeRow} from "react-native-swipe-list-view"
 
 class FavoriteView extends React.Component{
     static navigationOptions = ({ navigation }) => {
