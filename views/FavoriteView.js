@@ -4,16 +4,21 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import WeatherService from '../services/weather-service'
 import FavoriteItem from "../components/FavoriteItem";
 import {SwipeRow} from "react-native-swipe-list-view";
+import { NavigationEvents } from 'react-navigation';
 
 class FavoriteView extends React.Component{
     static navigationOptions = ({ navigation }) => {
+
         return {
             title: 'Favoris',
             headerRight: (
                 <Icon size={25} name={"ios-add-circle"} style={{paddingRight: 20}} onPress={ () => {
-                  if (navigation.state.params.count < 16) {
+                    console.log(navigation.state.params.count)
+                  if (navigation.state.params && navigation.state.params.count < 16) {
                     navigation.push('AddCity')
-                  } else {
+                  }
+                  else
+                  {
                     alert('vous avez atteind le maximum de favoris (16). Veuillez supprimer au moins un favoris pour pouvoir en rajouter')
                   }
                 }}/>
@@ -26,6 +31,7 @@ class FavoriteView extends React.Component{
     state = {
         cities: [],
         refreshing: false,
+        count:0,
     };
 
 
@@ -37,6 +43,12 @@ class FavoriteView extends React.Component{
                 this.props.navigation.setParams({count: JSON.parse(data).length});
                 this.setState({
                   cities: JSON.parse(data)
+                });
+
+
+              }else{
+                this.props.navigation.setParams({
+                    count: 0
                 });
               }
             })
@@ -55,7 +67,8 @@ class FavoriteView extends React.Component{
             AsyncStorage.setItem('cities', JSON.stringify(cities)).then(() => {
                 this.setState({
                     cities: cities
-                })
+                });
+
             }).catch(
                 error => {
                     console.error('favorite view : ', error);
@@ -66,6 +79,8 @@ class FavoriteView extends React.Component{
                 this.setState({
                     cities: []
                 })
+
+
             }).catch(
                 error => {
                     console.error('favorite view : ', error);
