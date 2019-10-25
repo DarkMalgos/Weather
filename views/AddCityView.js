@@ -11,14 +11,10 @@ class AddCityView extends React.Component{
         }
     };
 
-    serv = new WeatherService();
+
     state = {
         city: ''
     };
-
-    componentDidMount(): void {
-        this.canAdd()
-    }
 
     onChangeText(text) {
         this.setState({
@@ -27,27 +23,9 @@ class AddCityView extends React.Component{
     }
 
     addCity() {
-        this.serv.getWeatherHome(this.state.city).then((cityWeather) => {
-            AsyncStorage.getItem('cities').then(data => {
-                let tab = [];
-                if (data !== null)
-                    tab = JSON.parse(data);
-
-                tab.push({
-                    name: this.state.city,
-                    temp: cityWeather.data.main.temp,
-                    icon: cityWeather.data.weather[0].icon
-                });
-
-                AsyncStorage.setItem('cities', JSON.stringify(tab)).then(() => {
-                    this.props.navigation.goBack()
-                }).catch(
-                    error => {
-                        console.error('add city view : ', error);
-                    }
-                );
-            })
-        })
+      const action = { type: "ADD_FAVORITE", value: this.state.city }
+      this.props.dispatch(action)
+      this.props.navigation.goBack()
     }
 
     render(): React.ReactNode {
@@ -70,5 +48,6 @@ class AddCityView extends React.Component{
         )
     }
 }
+
 
 export default connect()(AddCityView)

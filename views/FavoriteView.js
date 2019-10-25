@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import WeatherService from '../services/weather-service'
 import FavoriteItem from "../components/FavoriteItem"
 import {SwipeRow} from "react-native-swipe-list-view"
+import {connect} from "react-redux";
 
 class FavoriteView extends React.Component{
     static navigationOptions = ({ navigation }) => {
@@ -11,9 +12,11 @@ class FavoriteView extends React.Component{
             title: 'Favoris',
             headerRight: (
                 <Icon size={25} name={"ios-add-circle"} style={{paddingRight: 20}} onPress={ () => {
-                  if (navigation.state.params.count < 16) {
+                  if (navigation.state.params && navigation.state.params.count < 16) {
                     navigation.push('AddCity')
-                  } else {
+                  }
+                  else
+                  {
                     alert('vous avez atteind le maximum de favoris (16). Veuillez supprimer au moins un favoris pour pouvoir en rajouter')
                   }
                 }}/>
@@ -26,9 +29,8 @@ class FavoriteView extends React.Component{
     state = {
         cities: [],
         refreshing: false,
+        count:0,
     };
-
-
 
     componentDidMount(): void {
         this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -38,41 +40,35 @@ class FavoriteView extends React.Component{
                 this.setState({
                   cities: JSON.parse(data)
                 });
+
+
+              }else{
+                this.props.navigation.setParams({
+                    count: 0
+                });
               }
             })
         });
     };
 
-
     componentWillUnmount() {
         this.focusListener.remove();
     }
 
-    deleteCity(index) {
-        let cities = this.state.cities;
-        if (cities.length > 1) {
-            cities.splice(index, 1);
-            AsyncStorage.setItem('cities', JSON.stringify(cities)).then(() => {
-                this.setState({
-                    cities: cities
-                })
-            }).catch(
-                error => {
-                    console.error('favorite view : ', error);
-                }
-            );
-        } else {
-            AsyncStorage.removeItem('cities').then(() => {
-                this.setState({
-                    cities: []
-                })
-            }).catch(
-                error => {
-                    console.error('favorite view : ', error);
-                }
-            );
-        }
+    componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any): void {
+      console.log('receive', nextProps.cities)
+      this.setState({
+        cities : nextProps.cities
+      })
     }
+
+  deleteCity(index) {
+    const action = {type: 'REMOVE_FAVORITE', value: {
+        index,
+        cities: this.state.cities
+      }}
+    this.props.dispatch(action)
+  }
 
     _refreshControl(){
         return (
@@ -152,4 +148,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default FavoriteView
+const mapStateToProps = (state) => {
+  console.log('helloo', state)
+  return {
+    cities: state.favoriteCities
+  }
+};
+
+export default connect(mapStateToProps)(FavoriteView)

@@ -14,7 +14,6 @@ class FavoriteItem extends React.Component {
     };
     
     render()  {
-      console.log('favorite item', this.props);
       return (
         <View
             style={{
